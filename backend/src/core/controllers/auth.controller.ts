@@ -1,14 +1,12 @@
-import appAssert from "../../common/API/AppAssert";
-import { registerSchema } from "../../common/schemas/auth";
-import { CREATED, NOT_FOUND } from "../../constants/http";
+import { loginSchema, registerSchema } from "../../common/schemas/auth";
+import { CREATED } from "../../constants/http";
 import asyncHandler from "../../middlewares/asyncHandler.middleware";
-import { createUserService } from "../services/auth.service";
+import { createUserService, loginUserService } from "../services/auth.service";
 
 
 //signup
 export const signup = asyncHandler(async (req, res) => {
   const body = registerSchema.parse(req.body);
-  appAssert(req.file, NOT_FOUND, "image file not found or invalid");
   //using services
   const { user } = await createUserService(body);
 
@@ -19,18 +17,18 @@ export const signup = asyncHandler(async (req, res) => {
 });
 
 //login
-// export const login = asyncHandler(async (req, res) => {
-//   const body = loginSchema.parse(req.body);
+export const login = asyncHandler(async (req, res) => {
+  const body = loginSchema.parse(req.body);
 
-//   const { accessToken, refreshToken, user } = await loginUserService(body);
+  const { accessToken, refreshToken, user } = await loginUserService(body);
 
-//   const cooki = setAuthCookies({ res, accessToken, refreshToken });
+  const cooki = setAuthCookies({ res, accessToken, refreshToken });
 
-//   return cooki.status(OK).json({
-//     message: "Logged in successfully",
-//     data: user,
-//   });
-// });
+  return cooki.status(OK).json({
+    message: "Logged in successfully",
+    data: user,
+  });
+});
 
 //logout
 // export const logout = asyncHandler(async (req, res) => {

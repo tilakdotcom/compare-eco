@@ -1,7 +1,7 @@
 import mongoose, { Document, Schema } from "mongoose";
 import { passwordCompare, passwordHasher } from "../../common/utils/bcryptjs";
 
-interface userDocument extends Document {
+export interface userDocument extends Document {
   user: string;
   email: string;
   password: string;

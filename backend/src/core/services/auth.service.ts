@@ -1,4 +1,9 @@
 import appAssert from "../../common/API/AppAssert";
+import {
+  accessTokenSignOptions,
+  generateToken,
+  refreshTokenSignOptions,
+} from "../../common/utils/jwtHelper";
 import { BAD_REQUEST } from "../../constants/http";
 import User from "../../database/models/user.model";
 
@@ -24,40 +29,46 @@ export const createUserService = async (data: CreateUserData) => {
   };
 };
 
-// type LoginUserData = {
-//   email: string;
-//   password: string;
-// };
+type LoginUserData = {
+  email: string;
+  password: string;
+};
 
-// export const loginUserService = async (data: LoginUserData) => {
-//   const user = await User.findOne({ email: data.email });
+export const loginUserService = async (data: LoginUserData) => {
+  const user = await User.findOne({ email: data.email });
 
-//   //validation
-//   appAssert(user, BAD_REQUEST, "invalid login user details");
+  //validation
+  appAssert(user, BAD_REQUEST, "invalid login user details");
 
-//   //password check
-//   const isMatch = await user.comparePassword(data.password);
+  //password check
+  const isMatch = await user.comparePassword(data.password);
 
-//   appAssert(isMatch, BAD_REQUEST, "invalid login user or password deatails");
+  appAssert(isMatch, BAD_REQUEST, "invalid login user or password details");
 
-//   //generate tokens
-//   const accessToken = signToken({
-//     userId: user._id,
-//   });
+  //generate tokens
+  const accessToken = generateToken(
+    {
+      userId: user._id,
+      email: user.email,
+    },
+    accessTokenSignOptions
+  );
 
-//   const refreshToken = signToken(
-//     {
-//       userId: user._id,
-//     },
-//     refreshTokenSignOptions
-//   );
+  const refreshToken = generateToken(
+    {
+      userId: user._id,
+      email: user.email,
+    },
+    refreshTokenSignOptions
+  );
 
-//   user.refreshToken = refreshToken;
-//   await user.save({ validateBeforeSave: false });
+  user.refreshToken = refreshToken;
 
-//   return {
-//     user: user.omitPassword(),
-//     accessToken,
-//     refreshToken,
-//   };
-// };
+  await user.save({ validateBeforeSave: false });
+
+  return {
+    user: user.publicUser(),
+    accessToken,
+    refreshToken,
+  };
+};
