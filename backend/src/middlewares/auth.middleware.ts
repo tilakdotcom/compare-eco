@@ -22,7 +22,7 @@ const verifyUser = asyncHandler(
       );
 
       //token decode
-      const decoded = verifyToken(token);
+      const decoded = verifyToken({ token });
       appAssert(
         decoded,
         UNAUTHORIZED,

@@ -52,10 +52,13 @@ type verifyOptionsWithSecret = VerifyOptions & {
 
 type verifyTokenParams = {
   token: string;
-  options: verifyOptionsWithSecret;
+  options?: verifyOptionsWithSecret;
 };
 
-export const verifyToken = ({ token, options= accessTokenSignOptions }: verifyTokenParams) => {
+export const verifyToken = ({
+  token,
+  options = accessTokenSignOptions,
+}: verifyTokenParams) => {
   const { secret, ...verifyOpts } = options || {};
 
   try {
@@ -64,7 +67,8 @@ export const verifyToken = ({ token, options= accessTokenSignOptions }: verifyTo
       ...defaultOptions,
     });
     return decoded as AccessTokenParams | RefreshTokenParams;
-  } catch (error) {
-    throw new ApiError(INTERNAL_SERVER_ERROR, "error in verifyToken");
+  } catch (error: any) {
+    console.log("error in verifyToken", error);
+    throw new ApiError(INTERNAL_SERVER_ERROR, "Unable to verify token ");
   }
 };
