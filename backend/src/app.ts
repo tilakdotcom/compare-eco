@@ -26,21 +26,10 @@ app.use(cors(corsOptions));
 app.use(cookieParser());
 
 // import routes and declaratio
-// import authRoutes from "./core/routes/auth.routes";
-// import userRoutes from "./core/routes/user.routes";
-// import albumRoutes from "./core/routes/album.routes";
-// import healthRoutes from "./core/routes/health.routes";
-// import songRoutes from "./core/routes/song.routes";
-// import stateRoutes from "./core/routes/state.routes";
+import healthRoutes from "./core/routes/health.routes";
 
-
-// //  use routes
-// app.use("/api/v1/auth", authRoutes);
-// app.use("/api/v1/user", userRoutes);
-// app.use("/api/v1/album", albumRoutes);
-// app.use("/api/v1/heath", healthRoutes);
-// app.use("/api/v1/song",songRoutes);
-// app.use("/api/v1/state",stateRoutes);
+//  use routes
+app.use("/api/v1/heath", healthRoutes);
 
 app.use(errorHandler);
 
