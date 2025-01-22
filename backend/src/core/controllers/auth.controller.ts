@@ -1,8 +1,8 @@
 import { loginSchema, registerSchema } from "../../common/schemas/auth";
-import { CREATED } from "../../constants/http";
+import { setAuthCookies } from "../../common/utils/cookie";
+import { CREATED, OK } from "../../constants/http";
 import asyncHandler from "../../middlewares/asyncHandler.middleware";
 import { createUserService, loginUserService } from "../services/auth.service";
-
 
 //signup
 export const signup = asyncHandler(async (req, res) => {

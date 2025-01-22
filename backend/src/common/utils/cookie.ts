@@ -15,20 +15,18 @@ const defaultCookieOptions: CookieOptions = {
   secure: true,
 };
 
-const accessTokenCookieOptions = () => {
+const accessTokenCookieOptions = (): CookieOptions => {
   return {
     ...defaultCookieOptions,
     expires: fifteenMinuteFromNow(),
-    maxAge: fifteenMinuteFromNow(),
   };
 };
 
-const refreshTokenCookieOptions = () => {
+const refreshTokenCookieOptions = (): CookieOptions => {
   return {
     ...defaultCookieOptions,
     path: REFRESH_PATH,
     expires: thirtyDaysFromNow(),
-    maxAge: thirtyDaysFromNow(),
   };
 };
 
@@ -37,5 +35,7 @@ export const setAuthCookies = ({
   accessToken,
   refreshToken,
 }: setAuthParams) => {
-  
+  return res
+    .cookie("accessToken", accessToken, accessTokenCookieOptions())
+    .cookie("refreshToken", refreshToken, refreshTokenCookieOptions());
 };
