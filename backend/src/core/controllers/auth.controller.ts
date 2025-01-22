@@ -1,6 +1,8 @@
+import appAssert from "../../common/API/AppAssert";
 import { loginSchema, registerSchema } from "../../common/schemas/auth";
-import { setAuthCookies } from "../../common/utils/cookie";
-import { CREATED, OK } from "../../constants/http";
+import { clearAuthCookie, setAuthCookies } from "../../common/utils/cookie";
+import { BAD_REQUEST, CREATED, OK } from "../../constants/http";
+import User from "../../database/models/user.model";
 import asyncHandler from "../../middlewares/asyncHandler.middleware";
 import { createUserService, loginUserService } from "../services/auth.service";
 
@@ -31,21 +33,21 @@ export const login = asyncHandler(async (req, res) => {
 });
 
 //logout
-// export const logout = asyncHandler(async (req, res) => {
-//   const userId = req.userId;
-//   const user = await User.findByIdAndUpdate(
-//     userId,
-//     {
-//       $set: {
-//         refreshToken: null,
-//       },
-//     },
-//     { new: true }
-//   );
+export const logout = asyncHandler(async (req, res) => {
+  const userId = req.userId;
+  const user = await User.findByIdAndUpdate(
+    userId,
+    {
+      $set: {
+        refreshToken: null,
+      },
+    },
+    { new: true }
+  );
 
-//   appAssert(user, BAD_REQUEST, "User not found  in the database");
+  appAssert(user, BAD_REQUEST, "User not found  in the database");
 
-//   return clearAuthCookie(res).status(OK).json({
-//     message: "Logged out successfully",
-//   });
-// });
+  return clearAuthCookie(res).status(OK).json({
+    message: "Logged out successfully",
+  });
+});
