@@ -1,6 +1,10 @@
 import appAssert from "../../common/API/AppAssert";
 import { loginSchema, registerSchema } from "../../common/schemas/auth";
-import { clearAuthCookie, setAuthCookies } from "../../common/utils/cookie";
+import {
+  clearAuthCookie,
+  setAccessTokenCookie,
+  setAuthCookies,
+} from "../../common/utils/cookie";
 import {
   accessTokenSignOptions,
   generateToken,
@@ -74,10 +78,6 @@ export const accessTokenRefresh = asyncHandler(async (req, res) => {
   });
   appAssert(user, UNAUTHORIZED, "User not found  in the database");
 
-  
-
-
-
   const accessToken = generateToken(
     {
       userId: user._id,
@@ -86,5 +86,7 @@ export const accessTokenRefresh = asyncHandler(async (req, res) => {
     accessTokenSignOptions
   );
 
-
+  return setAccessTokenCookie({ res, accessToken }).status(OK).json({
+    message: "Access token refreshed successfully",
+  });
 });
