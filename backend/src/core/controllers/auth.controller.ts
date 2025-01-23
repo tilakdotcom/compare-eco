@@ -1,7 +1,13 @@
 import appAssert from "../../common/API/AppAssert";
 import { loginSchema, registerSchema } from "../../common/schemas/auth";
 import { clearAuthCookie, setAuthCookies } from "../../common/utils/cookie";
-import { BAD_REQUEST, CREATED, OK } from "../../constants/http";
+import {
+  accessTokenSignOptions,
+  generateToken,
+  refreshTokenSignOptions,
+  verifyToken,
+} from "../../common/utils/jwtHelper";
+import { BAD_REQUEST, CREATED, OK, UNAUTHORIZED } from "../../constants/http";
 import User from "../../database/models/user.model";
 import asyncHandler from "../../middlewares/asyncHandler.middleware";
 import { createUserService, loginUserService } from "../services/auth.service";
@@ -50,4 +56,35 @@ export const logout = asyncHandler(async (req, res) => {
   return clearAuthCookie(res).status(OK).json({
     message: "Logged out successfully",
   });
+});
+
+export const accessTokenRefresh = asyncHandler(async (req, res) => {
+  const refreshToken = req.cookies.refreshToken;
+  appAssert(refreshToken, UNAUTHORIZED, "Refresh token  not found");
+  // userId
+  const userId = verifyToken({
+    token: refreshToken,
+    options: refreshTokenSignOptions,
+  });
+
+  appAssert(userId.userId, UNAUTHORIZED, "invalid  refresh token");
+
+  const user = await User.findOne({
+    _id: userId.userId,
+  });
+  appAssert(user, UNAUTHORIZED, "User not found  in the database");
+
+  
+
+
+
+  const accessToken = generateToken(
+    {
+      userId: user._id,
+      email: user.email,
+    },
+    accessTokenSignOptions
+  );
+
+
 });
