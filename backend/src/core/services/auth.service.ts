@@ -3,8 +3,9 @@ import {
   accessTokenSignOptions,
   generateToken,
   refreshTokenSignOptions,
+  verifyToken,
 } from "../../common/utils/jwtHelper";
-import { BAD_REQUEST } from "../../constants/http";
+import { BAD_REQUEST, UNAUTHORIZED } from "../../constants/http";
 import User from "../../database/models/user.model";
 
 type CreateUserData = {
@@ -70,5 +71,31 @@ export const loginUserService = async (data: LoginUserData) => {
     user: user.publicUser(),
     accessToken,
     refreshToken,
+  };
+};
+
+export const refreshTokenService = async (refreshToken: string) => {
+  const userId = verifyToken({
+    token: refreshToken,
+    options: refreshTokenSignOptions,
+  });
+
+  appAssert(userId.userId, UNAUTHORIZED, "invalid  refresh token");
+
+  const user = await User.findOne({
+    _id: userId.userId,
+  });
+  appAssert(user, UNAUTHORIZED, "User not found  in the database");
+
+  const accessToken = generateToken(
+    {
+      userId: user._id,
+      email: user.email,
+    },
+    accessTokenSignOptions
+  );
+
+  return {
+    accessToken,
   };
 };

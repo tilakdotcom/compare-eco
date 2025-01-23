@@ -5,16 +5,14 @@ import {
   setAccessTokenCookie,
   setAuthCookies,
 } from "../../common/utils/cookie";
-import {
-  accessTokenSignOptions,
-  generateToken,
-  refreshTokenSignOptions,
-  verifyToken,
-} from "../../common/utils/jwtHelper";
 import { BAD_REQUEST, CREATED, OK, UNAUTHORIZED } from "../../constants/http";
 import User from "../../database/models/user.model";
 import asyncHandler from "../../middlewares/asyncHandler.middleware";
-import { createUserService, loginUserService } from "../services/auth.service";
+import {
+  createUserService,
+  loginUserService,
+  refreshTokenService,
+} from "../services/auth.service";
 
 //signup
 export const signup = asyncHandler(async (req, res) => {
@@ -66,26 +64,7 @@ export const accessTokenRefresh = asyncHandler(async (req, res) => {
   const refreshToken = req.cookies.refreshToken;
   appAssert(refreshToken, UNAUTHORIZED, "Refresh token  not found");
   // userId
-  const userId = verifyToken({
-    token: refreshToken,
-    options: refreshTokenSignOptions,
-  });
-
-  appAssert(userId.userId, UNAUTHORIZED, "invalid  refresh token");
-
-  const user = await User.findOne({
-    _id: userId.userId,
-  });
-  appAssert(user, UNAUTHORIZED, "User not found  in the database");
-
-  const accessToken = generateToken(
-    {
-      userId: user._id,
-      email: user.email,
-    },
-    accessTokenSignOptions
-  );
-
+  const { accessToken } = await refreshTokenService(refreshToken);
   return setAccessTokenCookie({ res, accessToken }).status(OK).json({
     message: "Access token refreshed successfully",
   });
