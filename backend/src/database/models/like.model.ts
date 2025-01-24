@@ -3,7 +3,6 @@ import mongoose, { Document, Schema } from "mongoose";
 export interface likeDocument extends Document {
   userId: mongoose.Types.ObjectId;
   quarrel: mongoose.Types.ObjectId;
-  createAt: Date;
 }
 
 const likeSchema = new Schema<likeDocument>(
@@ -17,10 +16,6 @@ const likeSchema = new Schema<likeDocument>(
       type: Schema.Types.ObjectId,
       ref: "Quarrel",
       required: true,
-    },
-    createAt: {
-      type: Date,
-      default: Date.now,
     },
   },
   {

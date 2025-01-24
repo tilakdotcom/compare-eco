@@ -1,3 +1,4 @@
+import mongoose from "mongoose";
 import { z } from "zod";
 
 export const imageSchema = z.object({
@@ -27,3 +28,10 @@ export const quarrelSchema = z.object({
   content: z.string().min(5, "Description must be at least 5 characters long"),
   expireAt: z.string(),
 });
+
+export const mongoIdSchema = z
+  .string()
+  .refine((val) => mongoose.Types.ObjectId.isValid(val), {
+    message: "Invalid ObjectId",
+  })
+  .transform((val) => new mongoose.Types.ObjectId(val));
