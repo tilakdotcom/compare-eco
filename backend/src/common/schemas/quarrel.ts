@@ -25,8 +25,5 @@ export const imageSchema = z.object({
 export const quarrelSchema = z.object({
   title: z.string().min(4, "Title must be at least 4 characters long"),
   content: z.string().min(5, "Description must be at least 5 characters long"),
-  image: imageSchema,
-  expireAt: z.date().refine((date) => date > new Date(), {
-    message: "Expiry date must be in the future",
-  }),
+  expireAt: z.string(),
 });

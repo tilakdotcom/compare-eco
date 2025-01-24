@@ -8,7 +8,7 @@ import { newQuarrelService } from "../services/quarrel.service";
 export const newQuarrel = asyncHandler(async (req, res) => {
   const data = quarrelSchema.parse(req.body);
   appAssert(req.file, BAD_REQUEST, "file not found in request");
-  const { path } = validateFileImage(req.file);
+  const { path } = validateFileImage(req.file as Express.Multer.File);
   const { quarrel } = await newQuarrelService({
     ...data,
     image: path,

@@ -5,7 +5,7 @@ type newQuarrelData = {
   title: string;
   content: string;
   image: string;
-  expireAt: Date;
+  expireAt: string;
 };
 
 export const newQuarrelService = async (data: newQuarrelData) => {
