@@ -20,3 +20,11 @@ export const newQuarrel = asyncHandler(async (req, res) => {
     data: quarrel,
   });
 });
+
+export const deleteQuarrel = asyncHandler(async (req, res) => {});
+
+export const getQuarrel = asyncHandler(async (req, res) => {});
+
+export const getQuarrels = asyncHandler(async (req, res) => {});
+
+export const updateQuarrel = asyncHandler(async (req, res) => {});
