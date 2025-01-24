@@ -28,10 +28,12 @@ app.use(cookieParser());
 // import routes and declaratio
 import healthRoutes from "./core/routes/health.routes";
 import authRoutes from "./core/routes/auth.routes";
+import quarrelRoutes from "./core/routes/quarrel.routes";
 
 //  use routes
 app.use("/api/v1/heath", healthRoutes);
 app.use("/api/v1/auth", authRoutes);
+app.use("/api/v1/quarrel", quarrelRoutes);
 
 app.use(errorHandler);
 
